@@ -6,7 +6,7 @@ import { useUsersStore } from '@/entities/users';
 
 const store = useUsersStore();
 const { users, isUsersLoading, usersError } = storeToRefs(store);
-const { filters, filteredUsers } = useFilterUsers(users);
+const { filters, filteredUsers, resetFilters } = useFilterUsers(users);
 </script>
 
 <template>
@@ -26,7 +26,10 @@ const { filters, filteredUsers } = useFilterUsers(users);
     </div>
 
     <template v-else>
-      <FilterUsers v-model="filters" />
+      <FilterUsers
+        v-model="filters"
+        @on-reset="resetFilters"
+      />
       <UsersList :users="filteredUsers" />
     </template>
   </div>

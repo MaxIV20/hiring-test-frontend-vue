@@ -5,7 +5,7 @@ import type { UserRole, UserStatus } from '@/entities/users';
 import { type UsersFilters } from '../model/user-filter.types';
 
 const model = defineModel<UsersFilters>({ required: true });
-
+const emit = defineEmits<{ onReset: [] }>();
 const search = computed({
   get() {
     return model.value?.query ?? '';
@@ -32,6 +32,10 @@ const status = computed({
     model.value = { ...model.value, status: value };
   },
 });
+
+function resetFilters() {
+  emit('onReset');
+}
 </script>
 
 <template>
@@ -58,6 +62,12 @@ const status = computed({
         {{ statusOpt }}
       </option>
     </select>
+    <button
+      type="button"
+      @click="resetFilters"
+    >
+      Сбросить фильтры
+    </button>
   </div>
 </template>
 

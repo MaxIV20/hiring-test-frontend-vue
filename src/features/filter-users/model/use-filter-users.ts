@@ -1,7 +1,7 @@
 import type { UsersFilters } from './user-filter.types';
 import { computed, ref, type Ref, watch } from 'vue';
 import { type Users } from '@/entities/users';
-import { debounce } from '@/shared/utils/debounce';
+import { debounce } from '@/shared/utils';
 
 export function useFilterUsers(users: Ref<Users | undefined>) {
   const filters: Ref<UsersFilters> = ref({
@@ -17,7 +17,11 @@ export function useFilterUsers(users: Ref<Users | undefined>) {
   watch(
     () => filters.value.query,
     (query, _, onCleanup) => {
-      updateDebouncedQuery(query);
+      if (filters.value.query === '') {
+        debouncedQuery.value = query;
+      } else {
+        updateDebouncedQuery(query);
+      }
       onCleanup(updateDebouncedQuery.cancel);
     },
   );
@@ -37,5 +41,13 @@ export function useFilterUsers(users: Ref<Users | undefined>) {
     );
   });
 
-  return { filteredUsers, filters };
+  function resetFilters() {
+    filters.value = {
+      query: '',
+      role: null,
+      status: null,
+    };
+  }
+
+  return { filteredUsers, filters, resetFilters };
 }
